@@ -49,7 +49,7 @@ while not bound_upper_complete:
     cv2.destroyAllWindows()
 
 while not bound_lower_complete:
-    print("input_upper")
+    print("input_lower")
     height_lower = int(input())
     cv2.imshow("height_lower", sample_img[height_upper:height_lower, :])
     print("is it ok?[enter/other]")
@@ -68,7 +68,6 @@ inverted = cv2.bitwise_not(gray)
 bilateral_filter = cv2.bilateralFilter(inverted, 9, 16, 16)
 r, pre_bin = cv2.threshold(bilateral_filter, 127, 255, cv2.THRESH_BINARY)
 for file_name in file_list:
-
     original_img = cv2.imread("src/extract/" + file_name)
     # cv2.imshow("original_img", original_img)
 
@@ -99,6 +98,8 @@ for file_name in file_list:
             print(cur_word)
             ok = 13
             # if diff_len < 10 or abs(len(cur_word) - len(pre_word)) < 4 or img_diff < 0.05:
+            if img_diff > 0.98:
+                continue
             if img_diff > 0.9:
                 print("Check something")
                 cv2.imshow("dst", dst)
