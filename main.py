@@ -17,11 +17,12 @@ def img_similarity(img1, img2):
 
 
 file_list = os.listdir("src/extract/")
+file_list.sort()
 thumb_list = os.listdir("src/thumbs/")
 bound_upper_complete = False
 bound_lower_complete = False
-height_upper = 615
-height_lower = 665
+height_upper = 920 
+height_lower = 1000
 pre_word = ""
 diff = difflib.Differ()
 sample_img = cv2.imread("src/extract/" + file_list[50])
@@ -86,7 +87,8 @@ for file_name in file_list:
     # inverted = cv2.bitwise_not(gray)
     # dst = cv2.filter2D(inverted, -1, kernel_sharpen)
     # new_img = dst
-    text = image_to_string(dst, lang="kor", config="--psm 4 --oem 1")
+    text = image_to_string(dst, lang="Hangul", config="--psm 4 --oem 1")
+    # text = image_to_string(dst, lang="kor", config="--psm 4 --oem 1")
     word_list = re.sub("\d+|[ ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ\{\}\[\]\/?.,;:|\)「＊ㆍ：”…*~`!^\-_+<>@\#$%&\\\=\(\'\"]", "", text).split('\n')
     # word_list = re.sub("\d+|[ \{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]", "", text).split('\n')
     cur_word = max(word_list, key=len)
@@ -121,7 +123,8 @@ for file_name in file_list:
                 #
                 # dst2 = cur_bin2
                 dst2 = bilateral_filter2
-                text = image_to_string(dst2, lang="kor", config="--psm 4 --oem 1")
+                text = image_to_string(dst2, lang="Hangul", config="--psm 4 --oem 1")
+                # text = image_to_string(dst2, lang="kor", config="--psm 4 --oem 1")
                 word_list = re.sub("\d+|[ ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ\{\}\[\]\/?.,;:|\)「＊ㆍ：”…*~`!^\-_+<>@\#$%&\\\=\(\'\"]", "",
                                    text).split('\n')
                 # word_list = re.sub("\d+|[ \{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]", "", text).split('\n')
