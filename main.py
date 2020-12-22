@@ -40,16 +40,22 @@ thumb_cnt = 0
 str_diff = 0
 img_diff = 0
 ok = 13
+print(sample_img.shape)
 # selection
 print("load preset? [{}:{}] [y/n]".format(str(height_upper), str(height_lower)))
 yn = input()
 if yn == 'y':
     bound_upper_complete = True
     bound_lower_complete = True
+
 while not bound_upper_complete:
     print("input_upper")
     height_upper = int(input())
-    cv2.imshow("height_upper", sample_img[height_upper:, :])
+    sliced =  sample_img[height_upper:, :]
+    print(sliced.shape)
+    cv2.namedWindow("height_upper",cv2.WINDOW_NORMAL)
+    cv2.imshow("height_upper", sliced) 
+    cv2.resizeWindow("height_upper", 600,600)
     print("is it ok?[enter/other]")
     ret = cv2.waitKey(0)
     if ret == 13:
@@ -62,7 +68,10 @@ while not bound_upper_complete:
 while not bound_lower_complete:
     print("input_lower")
     height_lower = int(input())
-    cv2.imshow("height_lower", sample_img[height_upper:height_lower, :])
+    sliced = sample_img[height_upper:height_lower, :]
+    cv2.namedWindow("height_lower",cv2.WINDOW_NORMAL)
+    cv2.imshow("height_lower", sliced) 
+    cv2.resizeWindow("height_lower", 600,600)
     print("is it ok?[enter/other]")
     ret = cv2.waitKey(0)
     if ret == 13:
@@ -105,17 +114,17 @@ for file_name in file_list:
         continue
     if cur_word != pre_word:
         str_diff= SequenceMatcher(None, cur_word, pre_word).ratio()
-        #img_diff = img_similarity(pre_bin, cur_bin)
-        if str_diff > 0.9:
+        img_diff = img_similarity(pre_bin, cur_bin)
+
+
+        if img_diff > 0.9:
             #print("str pass : {:.03f}, img diff : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
             continue
-        elif str_diff > 0.2:
-            img_diff = img_similarity(pre_img, cur_img)
-            # same word. obviously.
-            if img_diff > 0.98:
+        elif img_diff > 0.5:
+            if str_diff > 0.9:
                 #print("str diff: {:.03f}, img pass : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
                 continue
-            if img_diff > 0.85:
+            if str_diff > 0.2:
                 print("Check something [{}], [{}]".format(pre_word, cur_word) )
                 cv2.imshow("dst", dst)
                 cv2.imshow("cur_bin", cur_bin)
@@ -126,11 +135,33 @@ for file_name in file_list:
             if ok != 13:
                 continue
 
-        if (0.9 > str_diff > 0.25):
-        #if (True):
-            print("str diff : {:.03f}, img diff : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
-        else:
-            print("str diff : {:.03f}, img diff : -.---, pre : [{}], cur : [{}]".format(str_diff, pre_word, cur_word))
+
+#        if str_diff > 0.9:
+#            #print("str pass : {:.03f}, img diff : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
+#            continue
+#        elif str_diff > 0.2:
+#            img_diff = img_similarity(pre_img, cur_img)
+#            # same word. obviously.
+#            if img_diff > 0.98:
+#                #print("str diff: {:.03f}, img pass : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
+#                continue
+#            if img_diff > 0.85:
+#                print("Check something [{}], [{}]".format(pre_word, cur_word) )
+#                cv2.imshow("dst", dst)
+#                cv2.imshow("cur_bin", cur_bin)
+#                add_img = cv2.addWeighted(pre_img, 0.5, cur_img, 0.5, 0)
+#                cv2.imshow("Okay to enter", add_img)
+#                ok = cv2.waitKey(0)
+#                cv2.destroyAllWindows()
+#            if ok != 13:
+#                continue
+
+        print("str diff : {:.03f}, img diff : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
+#        if (0.9 > str_diff > 0.25):
+#        #if (True):
+#            print("str diff : {:.03f}, img diff : {:.03f}, pre : [{}], cur : [{}]".format(str_diff, img_diff, pre_word, cur_word))
+#        else:
+#            print("str diff : {:.03f}, img diff : -.---, pre : [{}], cur : [{}]".format(str_diff, pre_word, cur_word))
         cur_img2 = original_img[2 * height_upper - height_lower:height_upper, :]
         gray2 = cv2.cvtColor(cur_img2, cv2.COLOR_BGR2GRAY)
         inverted2 = cv2.bitwise_not(gray2)
